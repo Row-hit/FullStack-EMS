@@ -14,12 +14,29 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        index: true,
         path: "/dashboard",
         element: <Dashboard />,
       },
       {
-        path: "/employees",
+        path: "employees",
         element: <Employees />,
+      },
+      {
+        path: "/leave",
+        element: <PrintPaySlipPage />,
+      },
+      {
+        path: "/payslips",
+        element: <PrintPaySlipPage />,
+      },
+      {
+        path: "/settings",
+        element: <PrintPaySlipPage />,
       },
     ],
   },
