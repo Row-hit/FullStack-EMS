@@ -1,8 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
 
+
+
+
+/* Light theme */
+:root {
+    --bg: rgb(255, 255, 255);
+    --bg-sec: rgb(241, 239, 239);
+    --text-main: rgb(40, 52, 83);
+    --text-sec: rgb(67, 69, 74);
+    --card: rgb(242, 243, 245);
+}
+
+/* Dark theme */
+.dark {
+    --bg: rgb(17, 24, 39);
+    --bg-sec: rgb(33, 49, 82);
+    --text-main: rgb(249, 250, 251);
+    --text-sec: rgb(166, 171, 177);
+    --card: rgb(31, 41, 55);
+}
+
+
 * {
     font-family: "Outfit", "Inter";
+    transition: background-color 0.3s, color 0.3s;
 }
 
 @layer utilities {
