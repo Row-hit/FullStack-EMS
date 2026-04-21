@@ -3,7 +3,6 @@ import LoginLeftSide from "../components/LoginLeftSide";
 import LoginRightSide from "../components/LoginRightSide";
 import { ShieldIcon, UserIcon } from "lucide-react";
 import { Outlet, useLocation } from "react-router-dom";
-import DarkThemeToggle from "../components/DarkThemeToggle";
 
 const LoginLanding = () => {
   const location = useLocation();
@@ -27,15 +26,11 @@ const LoginLanding = () => {
     },
   ];
   return (
-    <div className="min-h-screen flex flex-col md:flex-row relative">
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* LEFT SIDE */}
       <LoginLeftSide />
       {/* RIGHT SIDE */}
       {isFormOpen ? <Outlet /> : <LoginRightSide />}
-
-      <div className="absolute top-4 right-4">
-        <DarkThemeToggle />
-      </div>
     </div>
   );
 };
