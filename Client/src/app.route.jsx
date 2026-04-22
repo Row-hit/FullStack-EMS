@@ -5,6 +5,7 @@ import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import Employees from "./pages/Employees";
 import PrintPaySlipPage from "./pages/PrintPaySlipPage";
+import Attendance from "./pages/Attendance";
 
 const router = createBrowserRouter([
   // attendance leave payslips setting
@@ -17,14 +18,14 @@ const router = createBrowserRouter([
         index: true,
         element: <Dashboard />,
       },
-      {
-        index: true,
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
+
       {
         path: "employees",
         element: <Employees />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
       },
       {
         path: "/leave",
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to={"/dashboard"} replace />,
+    element: <Navigate to={"/"} replace />,
   },
 ]);
 

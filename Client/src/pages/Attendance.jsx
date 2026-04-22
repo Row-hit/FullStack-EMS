@@ -1,7 +1,7 @@
 import React from "react";
 
-const Attandance = () => {
+const Attendance = () => {
   return <div>Attandance Attandance</div>;
 };
 
-export default Attandance;
+export default Attendance;

@@ -28,14 +28,14 @@ const Sidebar = () => {
     setMobileOpen(false);
   }, [pathname]);
 
-  const role = "" | "Employee";
+  const role = "" | "employee";
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
 
     role === "admin"
       ? { name: "Employees", href: "/employees", icon: UserIcon }
-      : { name: "Attandance", href: "/attandance", icon: CalendarIcon },
+      : { name: "Attendance", href: "/attendance", icon: CalendarIcon },
     { name: "Leave", href: "/leave", icon: FileTextIcon },
     { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
     { name: "Settings ", href: "/settings", icon: SettingsIcon },
@@ -102,7 +102,7 @@ const Sidebar = () => {
       <div className="flex-1 px-3 space-y-0.5 overflow-y-auto ">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
-          console.log(item.href, isActive);
+
           return (
             <Link
               key={item.name}
