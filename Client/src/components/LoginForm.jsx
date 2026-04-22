@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 const roleConfig = {
@@ -17,7 +17,8 @@ const roleConfig = {
 };
 const LoginForm = () => {
   const { role } = useParams();
-  // const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -29,12 +30,11 @@ const LoginForm = () => {
 
   const config = roleConfig[role];
 
-  const onSubmit = (e) => {
+  const onSubmit = (data) => {
     setLoading(true);
 
-    const formData = Object.fromEntries(new FormData(e.target));
-    console.log(formData);
     setTimeout(() => setLoading(false), 2000);
+    navigate("/", { state: { role, user: data } });
   };
 
   if (!config) return <Navigate to={"/login"} replace />;
@@ -43,9 +43,7 @@ const LoginForm = () => {
       <div className="w-full max-w-md animate-fade-in">
         <Link
           to="/login"
-          className="inline-flex items-center
-gap-2 text-[var(--text-main)]  hover:text-[var(--text-sec)]  text-sm mb-10
-transition-colors"
+          className="inline-flex items-center gap-2 text-[var(--text-main)]  hover:text-[var(--text-sec)]  text-sm mb-10 transition-colors"
         >
           <ArrowLeftIcon size={16} /> Back to portals
         </Link>
