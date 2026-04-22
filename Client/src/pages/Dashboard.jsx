@@ -11,8 +11,6 @@ import { useLocation, useParams } from "react-router-dom";
 const Dashboard = () => {
   const location = useLocation();
   const role = location.state?.role;
-  const user = location.state?.user;
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 

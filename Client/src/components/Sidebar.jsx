@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const [username, setUsername] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,10 +28,10 @@ const Sidebar = () => {
     setMobileOpen(false);
   }, [pathname]);
 
-  const role = "" | "employee";
+  const role = state?.role ?? "employee";
 
   const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
+    { name: "Dashboard", href: "/", icon: LayoutGridIcon },
 
     role === "admin"
       ? { name: "Employees", href: "/employees", icon: UserIcon }
