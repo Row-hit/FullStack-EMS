@@ -1,9 +1,9 @@
 import React from "react";
-import LoginLeftSide from "../components/LoginLeftSide";
-import LoginRightSide from "../components/LoginRightSide";
 import { ShieldIcon, UserIcon } from "lucide-react";
 import { Outlet, useLocation } from "react-router-dom";
-import DarkThemeToggle from "../components/DarkThemeToggle";
+import LoginLeftSide from "../features/auth/components/LoginLeftSide";
+import LoginRightSide from "../features/auth/components/LoginRightSide";
+import DarkThemeToggle from "../components/ui/DarkThemeToggle";
 
 const LoginLanding = () => {
   const location = useLocation();

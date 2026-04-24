@@ -1,5 +1,4 @@
 import React from "react";
-import DarkThemeToggle from "./DarkThemeToggle";
 
 const LoginLeftSide = () => {
   return (
