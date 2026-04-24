@@ -9,7 +9,7 @@ import {
   ArrowRightIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import StatsCards from "./StatsCards";
+import StatsCards from "../../../components/ui/StatsCards";
 
 const EmployeeDashboard = ({ data }) => {
   const emp = data.employee;

@@ -63,7 +63,7 @@ export const dummyEmployeeData = [
     employmentStatus: "ACTIVE",
     joinDate: "2000-01-20T00:00:00.000Z",
     image: null,
-    isDeleted: false,
+    isDeleted: true,
     bio: "",
     createdAt: "2026-03-13T13:44:07.806Z",
     updatedAt: "2026-03-13T13:44:07.806Z",

@@ -8,7 +8,7 @@ import {
   CalendarIcon,
   FileTextIcon,
 } from "lucide-react";
-import StatsCards from "./StatsCards";
+import StatsCards from "../../../components/ui/StatsCards";
 
 const AdminDashboard = ({ data }) => {
   const stats = [

@@ -1,7 +1,10 @@
 import { ArrowLeftIcon, EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useRoleContext } from "../../../context/useRoleContext";
+
+const validRoles = ["admin", "employee"];
 
 const roleConfig = {
   admin: {
@@ -18,6 +21,7 @@ const roleConfig = {
 const LoginForm = () => {
   const { role } = useParams();
   const navigate = useNavigate();
+  const { setRole } = useRoleContext();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,8 +39,11 @@ const LoginForm = () => {
 
     setTimeout(() => {
       setLoading(false);
-      navigate("/", { state: { role, user: data } });
-    }, 2000);
+      if (validRoles.includes(role?.toLowerCase())) {
+        setRole(role);
+      }
+      navigate("/");
+    }, 1200);
   };
 
   if (!config) return <Navigate to={"/login"} replace />;

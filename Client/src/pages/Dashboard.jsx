@@ -3,17 +3,17 @@ import {
   dummyAdminDashboardData,
   dummyEmployeeDashboardData,
 } from "../assets/assets";
-import Loading from "../components/Loading";
-import EmployeeDashboard from "../components/EmployeeDashboard";
-import AdminDashboard from "../components/AdminDashboard";
-import { useLocation, useParams } from "react-router-dom";
+import Loading from "../components/ui/Loading";
+import { useRoleContext } from "../context/useRoleContext";
+import AdminDashboard from "../features/admin/components/AdminDashboard";
+import EmployeeDashboard from "../features/employee/components/EmployeeDashboard";
 
 const Dashboard = () => {
-  const location = useLocation();
-  const role = location.state?.role;
+  const { role } = useRoleContext();
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  console.log(role);
   useEffect(() => {
     if (role === "admin") {
       setData(dummyAdminDashboardData);
