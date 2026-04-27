@@ -1,23 +1,64 @@
-import React from "react";
+import { CalendarDays, Clock, AlertCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { dummyAttendanceData } from "../assets/assets";
+import Loading from "../components/ui/Loading";
+import CheckInButton from "../components/attendance/CheckInButton";
+import AttendanceStats from "../components/attendance/AttendanceStats";
+import RecentActivity from "../components/attendance/RecentActivity";
 
-import { Search } from "lucide-react";
 const Attendance = () => {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setHistory(dummyAttendanceData);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) return <Loading />;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayRecord = history.find(
+    (r) => new Date(r.date).toDateString() === today.toDateString(),
+  );
+
   return (
-    <div className="flex items-center gap-4 p-4 bg-gray-100">
-      {/* Search Input */}
-      <div className="flex items-center w-full bg-white rounded-lg border px-3 py-2 shadow-sm">
-        <Search className="text-gray-400 mr-2" size={18} />
-        <input
-          type="text"
-          placeholder="Search employees..."
-          className="w-full outline-none text-sm"
-        />
+    <div className="p-6 bg-gray-50 min-h-screen animate-fade-in">
+      {/* Header */}
+      <div className="mb-6 page-header">
+        <h1 className="   page-title">Attendance</h1>
+        <p className="text-gray-500 text-sm">
+          Track your work hours and daily check-ins
+        </p>
       </div>
 
-      {/* Department Filter */}
-      <button className="px-4 py-2 bg-white border rounded-lg shadow-sm text-sm hover:bg-gray-50 w-1/3">
-        All Departments
-      </button>
+      {isDeleted ? (
+        <div className="mb-8 p-6 bg-rose-50 border border-rose-200 rounded-2xl text-center">
+          {" "}
+          <p className="text-rose-600">
+            You can no longer clock in or out because your employee records have
+            been marked as deleted.{" "}
+          </p>{" "}
+        </div>
+      ) : (
+        <div className="mb-8">
+          <CheckInButton todayRecord={todayRecord} onAction={fetchData} />
+        </div>
+      )}
+
+      {/* Stats Cards */}
+      <AttendanceStats history={history} />
+
+      {/* Recent Activity */}
+      <RecentActivity activities={history} />
     </div>
   );
 };
