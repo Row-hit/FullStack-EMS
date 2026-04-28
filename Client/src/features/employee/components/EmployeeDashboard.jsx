@@ -49,7 +49,7 @@ const EmployeeDashboard = ({ data }) => {
         </p>
       </div>
       {/* Cards */}
-      <StatsCards cards={cards} />
+      <StatsCards cards={cards} iconPosition="right" />
       <div className="flex flex-col sm:flex-row gap-3">
         <Link
           to="/attendance"

@@ -1,17 +1,25 @@
-const StatsCards = ({ cards }) => {
+const StatsCards = ({ cards, iconPosition = "left" }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-10">
       {cards.map((card) => {
+        const title = card.title || card.label;
         const Icon = card.icon;
+
         return (
           <div
             key={card.title}
-            className="group bg-white border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-md transition rounded-lg border-l-4 border-l-slate-400 hover:border-l-indigo-400"
+            className="group bg-white border border-slate-200 p-4 flex items-center justify-around shadow-sm hover:shadow-md transition rounded-lg border-l-4 border-l-slate-400 hover:border-l-indigo-400"
           >
-            <div>
-              <p className="text-sm text-slate-500">{card.title}</p>
+            {/* icon left */}
+            {iconPosition === "left" && (
+              <div className="p-3 rounded-lg bg-slate-100 text-slate-600 group-hover:text-indigo-600">
+                <Icon size={22} />
+              </div>
+            )}
 
-              {/* optional subtitle */}
+            <div>
+              <p className="text-sm text-slate-500">{title}</p>
+
               {card.subtitle && (
                 <p className="text-xs text-slate-400">{card.subtitle}</p>
               )}
@@ -21,9 +29,12 @@ const StatsCards = ({ cards }) => {
               </h2>
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-100 text-slate-600 group-hover:text-indigo-600">
-              <Icon size={22} />
-            </div>
+            {/* icon right */}
+            {iconPosition === "right" && (
+              <div className="p-3 rounded-lg bg-slate-100 text-slate-600 group-hover:text-indigo-600">
+                <Icon size={22} />
+              </div>
+            )}
           </div>
         );
       })}

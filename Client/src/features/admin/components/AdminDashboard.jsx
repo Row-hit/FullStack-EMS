@@ -48,7 +48,7 @@ const AdminDashboard = ({ data }) => {
       </div>
 
       {/* Cards */}
-      <StatsCards cards={stats} />
+      <StatsCards cards={stats} iconPosition="right" />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { getDayTypeDisplay, getWorkingHoursDisplay } from "../../assets/assets";
 import { format } from "date-fns";
 
-const RecentActivity = ({ activities }) => {
+const AttendanceActivity = ({ activities }) => {
   return (
     <div className=" card overflow-hidden bg-white rounded-xl shadow-sm border">
       <div className="p-4   shadow-sm shadow-gray-400/60 mb-2">
@@ -76,4 +76,4 @@ const RecentActivity = ({ activities }) => {
   );
 };
 
-export default RecentActivity;
+export default AttendanceActivity;

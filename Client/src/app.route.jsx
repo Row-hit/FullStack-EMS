@@ -8,6 +8,7 @@ import Attendance from "./pages/Attendance";
 import ProtectedRoute from "./middleware/ProtectedRoute";
 import LoginForm from "./features/auth/components/LoginForm";
 import AfterLoginLanding from "./components/layout/AfterLoginLanding";
+import LeaveDashboard from "./pages/LeaveDashboard";
 
 const router = createBrowserRouter([
   // attendance leave payslips setting
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/leave",
-        element: <PrintPaySlipPage />,
+        element: <LeaveDashboard />,
       },
       {
         path: "/payslips",

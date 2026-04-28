@@ -2,7 +2,6 @@ import { AlertCircle, CalendarDays, Clock } from "lucide-react";
 import React from "react";
 
 const AttendanceStats = ({ history }) => {
-  console.log(history);
   const totalPresents = history.filter((h) => h.status === "PRESENT").length;
   const totalLate = history.filter((h) => h.status === "LATE").length;
 
