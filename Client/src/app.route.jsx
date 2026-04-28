@@ -9,6 +9,7 @@ import ProtectedRoute from "./middleware/ProtectedRoute";
 import LoginForm from "./features/auth/components/LoginForm";
 import AfterLoginLanding from "./components/layout/AfterLoginLanding";
 import LeaveDashboard from "./pages/LeaveDashboard";
+import Payslip from "./pages/PaySlip";
 
 const router = createBrowserRouter([
   // attendance leave payslips setting
@@ -44,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/payslips",
-        element: <PrintPaySlipPage />,
+        element: <Payslip />,
       },
       {
         path: "/settings",
