@@ -4,7 +4,7 @@ import { dummyAttendanceData } from "../assets/assets";
 import Loading from "../components/ui/Loading";
 import CheckInButton from "../components/attendance/CheckInButton";
 import AttendanceStats from "../components/attendance/AttendanceStats";
-import RecentActivity from "../components/attendance/RecentActivity";
+import AttendanceActivity from "../components/attendance/AttendanceActivity";
 
 const Attendance = () => {
   const [history, setHistory] = useState([]);
@@ -58,7 +58,7 @@ const Attendance = () => {
       <AttendanceStats history={history} />
 
       {/* Recent Activity */}
-      <RecentActivity activities={history} />
+      <AttendanceActivity activities={history} />
     </div>
   );
 };
