@@ -131,6 +131,34 @@ const Sidebar = () => {
         })}
       </div>
 
+      {/* Role Switcher Buttons */}
+      <div className="p-3 border-t border-white/6">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setRole("admin")}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 ${
+              role === "admin"
+                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                : "text-slate-400 hover:text-white hover:bg-white/4 border border-white/10"
+            }`}
+          >
+            <span className="font-bold text-base">A</span>
+            <span>Admin</span>
+          </button>
+          <button
+            onClick={() => setRole("employee")}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 ${
+              role === "employee"
+                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                : "text-slate-400 hover:text-white hover:bg-white/4 border border-white/10"
+            }`}
+          >
+            <span className="font-bold text-base">E</span>
+            <span>Employee</span>
+          </button>
+        </div>
+      </div>
+
       {/* Logout link  */}
       <div className=" p-3 border-t border-white/40">
         <button
