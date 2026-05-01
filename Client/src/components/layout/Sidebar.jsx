@@ -2,21 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { dummyProfileData } from "../../assets/assets";
 import {
+  ArrowBigLeftDash,
   CalendarIcon,
   ChevronRightIcon,
   DollarSignIcon,
   FileTextIcon,
   HomeIcon,
   LayoutGridIcon,
+  ListCollapse,
+  ListCollapseIcon,
   LogOutIcon,
+  LucideListCollapse,
   MenuIcon,
   SettingsIcon,
   UserIcon,
   XIcon,
 } from "lucide-react";
 import { useRoleContext } from "../../context/useRoleContext";
+import DarkThemeToggle from "../ui/DarkThemeToggle";
 
-const Sidebar = () => {
+const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
   const { role, setRole } = useRoleContext();
   const { pathname } = useLocation();
   const [username, setUsername] = useState("");
@@ -66,10 +71,13 @@ const Sidebar = () => {
           </div>
           {/* close button on mobile  */}
           <button
-            onClick={() => setMobileOpen(false)}
-            className="lg:hidden text-slate-400 hover:text-white p-1"
+            onClick={() => {
+              setMobileOpen(false);
+              setDesktopOpen(false);
+            }}
+            className="  text-slate-400 hover:text-white p-1"
           >
-            <XIcon size={20} />
+            {desktopOpen ? <ArrowBigLeftDash /> : <XIcon size={20} />}
           </button>
         </div>
       </div>
@@ -98,9 +106,14 @@ const Sidebar = () => {
         <p className="text-[10px] font-semibold uppercase tracking-[0.12em]  ">
           Navigation
         </p>
-        <Link to={"/"}>
-          <HomeIcon size={16} />
-        </Link>
+        <div className="flex justify-between items-center gap-x-2">
+          <Link to={"/"}>
+            <HomeIcon size={16} />
+          </Link>
+          <div className=" scale-80 ">
+            <DarkThemeToggle />
+          </div>
+        </div>
       </div>
 
       {/* Navigation lists  */}
@@ -133,6 +146,9 @@ const Sidebar = () => {
 
       {/* Role Switcher Buttons */}
       <div className="p-3 border-t border-white/6">
+        <p className="text-center text-slate-500 mb-4">
+          // only for development
+        </p>
         <div className="flex gap-2">
           <button
             onClick={() => setRole("admin")}
@@ -176,10 +192,19 @@ const Sidebar = () => {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-[60] p-2 rounded-lg 
-    bg-slate-900 text-white shadow-lg border border-white/10"
+        className={`lg:hidden fixed top-4 left-4 z-[60] p-2 rounded-lg 
+    bg-slate-900 text-white shadow-lg border border-white/10 ${mobileOpen ? "opacity-0" : "opacity-100"}`}
       >
         <MenuIcon size={20} />
+      </button>
+
+      {/* desktop Menu Button */}
+      <button
+        onClick={() => setDesktopOpen(true)}
+        className={`max-lg:hidden fixed top-4 left-4 z-[60] p-2 rounded-lg 
+    bg-slate-900 text-white shadow-lg border border-white/10 ${desktopOpen ? "opacity-0" : "opacity-100"}`}
+      >
+        <ListCollapseIcon />
       </button>
 
       {/* Overlay */}
@@ -191,7 +216,7 @@ const Sidebar = () => {
 
       {/* Sidebar (shared styles) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 h-screen flex flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-white/5 text-white transform-gpu transition-all duration-500 ease-in-out will-change-transform ${mobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full lg:translate-x-0 opacity-85 lg:opacity-100"}`}
+        className={`fixed inset-y-0 left-0 z-50 w-72 h-screen flex flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-white/5 text-white transform transform-gpu will-change-transform transition-transform duration-500 ease-out ${mobileOpen || desktopOpen ? "translate-x-0" : "-translate-x-full"}  `}
       >
         {sidebarContent}
       </aside>

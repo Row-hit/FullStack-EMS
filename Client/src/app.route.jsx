@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, useLocation } from "react-router-dom";
 import LoginLanding from "./pages/LoginLanding";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -13,8 +13,14 @@ import Payslip from "./pages/PaySlip";
 import Settings from "./pages/Settings";
 
 const router = createBrowserRouter([
-  // attendance leave payslips setting
-
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <AfterLoginLanding />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: "/",
     element: (
@@ -23,10 +29,6 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      {
-        index: true,
-        element: <AfterLoginLanding />,
-      },
       {
         path: "dashboard",
         element: <Dashboard />,

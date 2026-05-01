@@ -5,8 +5,8 @@ const LoginRightSide = () => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="md:w-1/2 bg-[var(--bg)] flex items-center justify-center p-10">
-        <div className="w-full max-w-sm space-y-6">
+      <div className="md:w-1/2 bg-[var(--bg)] flex items-center justify-center p-10   ">
+        <div className="w-full max-w-sm space-y-6 ">
           <div>
             <h2 className="text-2xl font-semibold  text-[var(--text-main)]">
               Welcome Back
@@ -18,20 +18,20 @@ const LoginRightSide = () => {
 
           {/* Admin Button */}
           <button
-            className="group w-full flex justify-between items-center px-5 py-4 rounded-lg bg-[var(--bg-sec)] hover:bg-[var(--card)] shadow hover:shadow-md transition border "
+            className="group w-full flex justify-between items-center px-5 py-4 rounded-lg bg-[var(--bg-sec)] hover:bg-[var(--card)] shadow hover:shadow-md transition border z-50 cursor-pointer"
             onClick={() => navigate("/login/admin")}
           >
-            <span className="text-[var(--text-main)] font-medium  group-hover:text-[var(--text-sec)]">
+            <span className="text-[var(--text-main)] font-medium  group-hover:text-[var(--text-sec)] z-50">
               Admin Portal
             </span>
-            <span className=" text-[var(--text-main)] group-hover:text-[var(--text-sec)]">
+            <span className=" text-[var(--text-main)] group-hover:text-[var(--text-sec)] ">
               →
             </span>
           </button>
 
           {/* Employee Button */}
           <button
-            className="group w-full flex justify-between items-center px-5 py-4 rounded-lg bg-[var(--bg-sec)] hover:bg-[var(--card)] shadow hover:shadow-md transition border"
+            className="group w-full flex justify-between items-center px-5 py-4 rounded-lg bg-[var(--bg-sec)] hover:bg-[var(--card)] shadow hover:shadow-md transition border z-50 cursor-pointer"
             onClick={() => navigate("/login/employee")}
           >
             <span className="text-[var(--text-main)] font-medium  group-hover:text-[var(--text-sec)]">

@@ -11,15 +11,108 @@
     --text-main: rgb(40, 52, 83);
     --text-sec: rgb(67, 69, 74);
     --card: rgb(242, 243, 245);
+
+    /* inverse (for light mode → dark button) */
+    --btn-inv-bg: #111827;
+    --btn-inv-text: #f9fafb;
+
+
+    /* gradient    */
+    --bg-gradient:
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.08), transparent 50%),
+        linear-gradient(to bottom right, #ffffff, #f8fafc);
+
+    --bg-pattern:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+
 }
 
 /* Dark theme */
 .dark {
-    --bg: rgb(17, 24, 39);
+    --bg: #111827;
     --bg-sec: rgb(33, 49, 82);
     --text-main: rgb(249, 250, 251);
     --text-sec: rgb(166, 171, 177);
     --card: rgb(31, 41, 55);
+
+    /* inverse (for dark mode → light button) */
+    --btn-inv-bg: #f9fafb;
+    --btn-inv-text: #111827;
+
+    /* gradient    */
+    --bg-gradient:
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.25), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.25), transparent 40%),
+        linear-gradient(to bottom right, #0f172a, #020617);
+}
+
+@theme {
+    --color-bg: var(--bg);
+    --color-gradient: var(--bg-gradient);
+    --color-bg-sec: var(--bg-sec);
+    --color-main: var(--text-main);
+    --color-sec: var(--text-sec);
+    --color-card: var(--card);
+    --color-inv-bg: var(--btn-inv-bg);
+    --color-inv-text: var(--btn-inv-text)
+}
+
+.bg-theme {
+
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom right, #ffffff, #fdf4ff);
+}
+
+.dark .bg-theme {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.25), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.25), transparent 40%),
+        linear-gradient(to bottom right, #0f172a, #020617);
+    background-size: cover;
+}
+
+/* animated glow layer */
+.bg-theme::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background:
+        radial-gradient(circle, rgba(244, 114, 182, 0.35) 0%, transparent 10%),
+        radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, transparent 60%);
+
+    animation: moveRandom 12s linear infinite;
+    filter: blur(100px);
+}
+
+/* animation */
+@keyframes moveRandom {
+    0% {
+        transform: translate(-20%, -10%) scale(1) rotate(0deg);
+    }
+
+    20% {
+        transform: translate(10%, -30%) scale(1.1) rotate(30deg);
+    }
+
+    40% {
+        transform: translate(25%, 10%) scale(0.9) rotate(60deg);
+    }
+
+    60% {
+        transform: translate(-10%, 30%) scale(1.05) rotate(120deg);
+    }
+
+    80% {
+        transform: translate(-30%, 0%) scale(0.95) rotate(200deg);
+    }
+
+    100% {
+        transform: translate(-20%, -10%) scale(1) rotate(360deg);
+    }
 }
 
 
