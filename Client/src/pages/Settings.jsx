@@ -23,7 +23,7 @@ const Settings = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in max-w-4xl mx-auto">
       <div className="page-header">
         <h1 className="page-title">Settings</h1>
         <p className="page-subtitle">Manage your account and preferences</p>

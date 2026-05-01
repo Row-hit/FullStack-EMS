@@ -1,28 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import DarkThemeToggle from "../ui/DarkThemeToggle";
 
 const AfterLoginLanding = () => {
   return (
-    <div className="min-h-screen -mx-15 -mt-7 -mb-40  bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 text-white flex flex-col">
+    <div className="min-h-screen  flex flex-col  bg-theme  text-main">
       {/* Navbar */}
-      <div className="flex justify-between items-center px-6 py-4">
+      <div className="flex justify-between items-center px-6 py-4 z-50">
         <h1 className="text-2xl font-bold">EMS</h1>
+        <DarkThemeToggle />
       </div>
 
       {/* Center Content */}
-      <div className="flex flex-1 items-center justify-center px-6">
+      <div className="flex flex-1 items-center justify-center px-6 z-50">
         <div className="text-center max-w-xl">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Welcome Back 👋
+            Smarter Employee Management Starts Here
           </h2>
 
-          <p className="text-lg text-white/80 mb-8">
-            You're all set. Access your dashboard to manage everything in one
-            place.
+          <p className="text-md text-[var(--text-main)] opacity-75 mb-8">
+            Manage attendance, payroll, and employee data
+            <br /> — all in one powerful dashboard.
           </p>
 
           <Link to="/dashboard">
-            <button className="px-8 py-3 bg-white text-indigo-600 font-semibold rounded-xl shadow-lg hover:scale-105 transition">
+            <button className="px-8 py-3 bg-inv-bg text-inv-text font-semibold rounded-xl shadow-lg hover:scale-105 transition cursor-pointer ">
               Go to Dashboard →
             </button>
           </Link>
@@ -30,7 +32,7 @@ const AfterLoginLanding = () => {
       </div>
 
       {/* Footer */}
-      <div className="text-center py-4 text-sm text-white/70">
+      <div className="text-center py-4 text-sm text-[var(--text-sec)]">
         © 2026 EMS System
       </div>
     </div>
