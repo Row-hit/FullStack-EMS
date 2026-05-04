@@ -4,8 +4,8 @@ import {
   deleteEmployee,
   getEmployees,
   updateEmployee,
-} from "../controllers/employee.controller";
-import { protect, protectAdmin } from "../middleware/auth.middleware";
+} from "../controllers/employee.controller.js";
+import { protect, protectAdmin } from "../middleware/auth.middleware.js";
 
 const employeeRouter = Router();
 
