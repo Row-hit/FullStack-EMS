@@ -3,19 +3,29 @@ import dotenv from "dotenv/config";
 import cors from "cors";
 import multer from "multer";
 import connectDB from "./configDB/connectDB.js";
+import authRouter from "./routes/auth.route.js";
+import employeeRouter from "./routes/employee.route.js";
+import profileRouter from "./routes/profile.route.js";
+import attendanceRouter from "./routes/attendance.route.js";
 
 const app = express();
 
 const PORT = process.env.PORT || 3999;
 
-// middlewares
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(multer().none());
 
+// Routes
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Ok oK hai" });
 });
+
+app.use("/api/auth", authRouter);
+app.use("/api/employee", employeeRouter);
+app.use("/api/profile", profileRouter);
+app.use("/api/attendance", attendanceRouter);
 
 await connectDB();
 app.listen(PORT, () => {
