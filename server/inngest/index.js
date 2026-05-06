@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import Attendance from "../models/attendance.model.js";
 import LeaveApplication from "../models/leave-application.model.js";
 import sendEmail from "../config/nodemailer.js";
+import Employee from "../models/employee.model.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "fullstack-ems-test" });
@@ -16,7 +17,7 @@ const autoCheckOut = inngest.createFunction(
     //wait for 9 hours
     await step.sleepUntil(
       "wait-for-the-9-hours",
-      new Date(new Date() + 9 * 60 * 60 * 1000),
+      new Date(Date.now() + 9 * 60 * 60 * 1000),
     );
 
     //get attendance data
@@ -45,7 +46,7 @@ const autoCheckOut = inngest.createFunction(
       // After 10 hours, mark attendance as checked out with status "LATE"
       await step.sleepUntil(
         "wait-for-the-1-hour",
-        new Date(new Date() + 1 * 60 * 60 * 1000),
+        new Date(Date.now() + 1 * 60 * 60 * 1000),
       );
 
       attendance = await Attendance.findById(attendanceId);
@@ -103,7 +104,7 @@ const attendanceReminderCron = inngest.createFunction(
   {
     id: "attendance-reminder-cron",
     triggers: [
-      { cron: "0 0 6 * * *" }, // 06:00 UTC = 11:30 AM IST
+      { cron: "TZ=Asia/Kolkata 30 11 * * *" }, // 06:00 UTC = 11:30 AM IST
     ],
   },
 
@@ -120,7 +121,7 @@ const attendanceReminderCron = inngest.createFunction(
     });
 
     // Step 2: Get all active, non-deleted employees
-    const activeEmployee = await step.run("get-active-employees", async () => {
+    const activeEmployees = await step.run("get-active-employees", async () => {
       const employees = await Employee.find({
         isDeleted: false,
         employmentStatus: "ACTIVE",
@@ -129,6 +130,8 @@ const attendanceReminderCron = inngest.createFunction(
         _id: e._id.toString(),
         firstName: e.firstName,
         lastName: e.lastName,
+        email: e.email,
+        department: e.department,
       }));
     });
 
@@ -151,7 +154,7 @@ const attendanceReminderCron = inngest.createFunction(
           $lt: new Date(today.endUTC),
         },
       }).lean();
-      return attendance.map((a) => a.employeeId.tostring());
+      return attendance.map((a) => a.employeeId.toString());
     });
 
     // Step 5: Filter absent employees (not on leave & not checked in)
@@ -161,7 +164,7 @@ const attendanceReminderCron = inngest.createFunction(
 
     // Step 6: Send reminder emails
     if (absentEmployees.length > 0) {
-      await step.run("Send-reminders-email", async () => {
+      await step.run("send-reminders-email", async () => {
         const emailPromises = absentEmployees.map((emp) => {
           //send email
           sendEmail({
@@ -179,13 +182,14 @@ const attendanceReminderCron = inngest.createFunction(
                                 <p style="font-size: 16px;"><strong>QuickEMS</strong></p>
                             </div> `,
           });
+            await Promise.all(emailPromises);
         });
       });
     }
 
     return {
       totalActive: activeEmployees.length,
-      onLeave: onLeavesIds.length,
+      onLeave: onLeaveIds.length,
       checkedIn: checkedInIds.length,
       absent: absentEmployees.length,
     };

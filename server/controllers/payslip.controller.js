@@ -51,9 +51,9 @@ export const getPayslips = async (req, res) => {
         const obj = p.toObject();
         return {
           ...obj,
-          id: obj._id.toString(),
+          id: obj._id .toString(),
           employee: obj.employeeId,
-          employeeId: obj.employeeId?._id?.toString(),
+          employeeId: obj.employeeId?._id? .toString(),
         };
       });
       return res.status(200).json({
@@ -90,7 +90,7 @@ export const getPayslipById = async (req, res) => {
 
     const result = {
       ...payslip,
-      id: payslip._id.toString(),
+      id: payslip._id .toString(),
       employee: payslip.employeeId,
     };
 

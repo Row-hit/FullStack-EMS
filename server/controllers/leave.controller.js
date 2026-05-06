@@ -88,9 +88,9 @@ export const getLeaves = async (req, res) => {
         const obj = leave.toObject();
         return {
           ...obj,
-          id: obj._id.toString(),
+          id: obj._id .toString(),
           employee: obj.employeeId,
-          employeeId: obj.employeeId?._id?.toString(),
+          employeeId: obj.employeeId?._id? .toString(),
         };
       });
 
@@ -110,7 +110,7 @@ export const getLeaves = async (req, res) => {
         leavesData,
         employee: {
           ...employee,
-          id: employee._id.toString(),
+          id: employee._id .toString(),
         },
       });
     }
