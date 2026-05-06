@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv/config";
 import cors from "cors";
 import multer from "multer";
-import connectDB from "./configDB/connectDB.js";
+import connectDB from "./config/connectDB.js";
 import authRouter from "./routes/auth.route.js";
 import employeeRouter from "./routes/employee.route.js";
 import profileRouter from "./routes/profile.route.js";
@@ -10,6 +10,8 @@ import attendanceRouter from "./routes/attendance.route.js";
 import leaveRouter from "./routes/leave.route.js";
 import payslipRouter from "./routes/payslip.route.js";
 import dashboardRouter from "./routes/dashboard.route.js";
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js";
 
 const app = express();
 
@@ -32,6 +34,7 @@ app.use("/api/attendance", attendanceRouter);
 app.use("/api/leaves", leaveRouter);
 app.use("/api/payslips", payslipRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 await connectDB();
 app.listen(PORT, () => {

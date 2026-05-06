@@ -37,6 +37,14 @@ export const clockInOut = async (req, res) => {
         status: isLate ? "LATE" : "PRESENT",
       });
 
+      await inngest.send({
+        name: "employee/checkout",
+        data: {
+          employeeId: employee._id,
+          attendanceId: attendance._id,
+        },
+      });
+
       return res
         .status(200)
         .json({ success: true, type: "CHECK_IN", data: attendance });
