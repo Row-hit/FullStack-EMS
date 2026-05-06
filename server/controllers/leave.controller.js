@@ -1,3 +1,4 @@
+import { inngest } from "../inngest/index.js";
 import Employee from "../models/employee.model.js";
 import LeaveApplication from "../models/leave-application.model.js";
 
@@ -45,6 +46,14 @@ export const createLeave = async (req, res) => {
       reason,
       status: "PENDING",
     });
+
+    await inngest.send({
+      name: "leave/pending",
+      data: {
+        leaveApplicationId: leave._id,
+      },
+    });
+
     return res.status(200).json({
       success: true,
       data: leave,

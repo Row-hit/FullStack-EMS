@@ -1,8 +1,8 @@
-import { DEPARTMENTS } from "../constants/departments";
-import Attendance from "../models/attendance.model";
-import Employee from "../models/employee.model";
-import LeaveApplication from "../models/leave-application.model";
-import Payslip from "../models/payslip.model";
+import { DEPARTMENTS } from "../constants/departments.js";
+import Attendance from "../models/attendance.model.js";
+import Employee from "../models/employee.model.js";
+import LeaveApplication from "../models/leave-application.model.js";
+import Payslip from "../models/payslip.model.js";
 
 /**
  * @desc Get dashboard for Employee and Admin
