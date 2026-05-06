@@ -182,8 +182,8 @@ const attendanceReminderCron = inngest.createFunction(
                                 <p style="font-size: 16px;"><strong>QuickEMS</strong></p>
                             </div> `,
           });
-            await Promise.all(emailPromises);
         });
+        await Promise.all(emailPromises);
       });
     }
 
