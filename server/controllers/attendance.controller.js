@@ -28,22 +28,27 @@ export const clockInOut = async (req, res) => {
     const now = new Date();
 
     if (!existing) {
-      const isLate = now.getHours >= 9 && now.getMinutes > 15; // 9.15 O'clock
+      const isLate =
+        now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 15); // 9.15 O'clock
 
       const attendance = await Attendance.create({
-        EmployeeId: employee._id,
+        employeeId: employee._id,
         date: today,
         checkIn: now,
         status: isLate ? "LATE" : "PRESENT",
       });
 
-      await inngest.send({
-        name: "employee/checkout",
-        data: {
-          employeeId: employee._id,
-          attendanceId: attendance._id,
-        },
-      });
+      try {
+        await inngest.send({
+          name: "employee/checkout",
+          data: {
+            employeeId: employee._id,
+            attendanceId: attendance._id,
+          },
+        });
+      } catch (error) {
+        console.error("Inngest checkout event failed:", error);
+      }
 
       return res
         .status(200)
@@ -55,12 +60,12 @@ export const clockInOut = async (req, res) => {
 
       // compute working hours and day type
       const workingHours = parseFloat(diffHours.toFixed(2));
-      let datType = "";
+      let dayType = "";
 
       if (workingHours >= 8) dayType = "Full Day";
       else if (workingHours >= 6) dayType = "Three Quarter Day";
       else if (workingHours >= 4) dayType = "Half Day";
-      else dayType = "short Day";
+      else dayType = "Short Day";
 
       existing.checkOut = now;
       existing.workingHours = workingHours;
@@ -74,15 +79,13 @@ export const clockInOut = async (req, res) => {
         data: existing,
       });
     } else {
-      return res.status(200).json({
-        success: true,
-        type: "CHECK_OUT",
-        data: existing,
+      return res.status(400).json({
+        success: false,
+        message: "Already checked out for today",
       });
     }
   } catch (error) {
-    console.log("Attendance Error", error);
-    return res.status(500).json({ error: "Opration failed" });
+    return res.status(500).json({ error: "Operation failed" });
   }
 };
 

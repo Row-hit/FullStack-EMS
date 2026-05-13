@@ -51,7 +51,7 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
             <label className="block text-sm mb-1">Join Date</label>
             <input
               type="date"
-              name="date"
+              name="joinDate"
               defaultValue={form?.date || ""}
               className="w-full border rounded-lg px-3 py-2"
             />
@@ -86,7 +86,7 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
                 defaultValue={form?.department}
                 className="w-full border rounded-lg px-3 py-2 bg-white"
               >
-                <option defaultValue="">Select Department</option>
+                <option value="">Select Department</option>
                 {DEPARTMENTS.map((dep) => (
                   <option key={dep} value={dep}>
                     {dep}
@@ -126,9 +126,7 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
                 min="0"
                 step="0.01"
                 required
-                default
-                default
-                defaultValue={form?.allowances || 0}
+                defaultValue={form?.allowances || ""}
               />
             </div>
             <div>
@@ -139,9 +137,7 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
                 min="0"
                 step="0.01"
                 required
-                default
-                default
-                defaultValue={form?.deductions || 0}
+                defaultValue={form?.deductions || ""}
               />
             </div>
             {isEdit && (
@@ -182,7 +178,6 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
                 <input
                   type="password"
                   name="password"
-                  required
                   placeholder="Leave blank to keep current"
                 />
               </div>
@@ -194,16 +189,16 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
             )}
             <div>
               <label className="block mb-2">System Role</label>
-              <select name="role" defaultValue={form?.user?.role || "Employee"}>
+              <select name="role" defaultValue={form?.user?.role || "EMPLOYEE"}>
                 <option value="EMPLOYEE">Employee</option>
-                <option value="ADMIN">Admin</option>
+                <option value="ADMIN">ADMIN</option>
               </select>
             </div>
           </div>
         </div>
 
         {/* Buttons */}
-        <div className=" sticky bottom-0 bg-white py-4 mt-4 border-t border-gray-400/40  flex justify-end gap-3 z-10">
+        <div className=" sticky bottom-0 bg-white py-4 mt-4 border-t border-gray-400/40  flex justify-end gap-3 z-10 cursor-pointer">
           <button
             type="button"
             onClick={() => isOpen(false)}
@@ -214,7 +209,7 @@ const EmployeeForm = ({ form, isEdit, isOpen, handleSubmit }) => {
 
           <button
             type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg cursor-pointer"
           >
             {isEdit ? "Update Employee" : "Create Employee"}
           </button>

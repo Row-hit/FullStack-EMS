@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from "react";
-import {
-  dummyAdminDashboardData,
-  dummyEmployeeDashboardData,
-} from "../assets/assets";
+
 import Loading from "../components/ui/Loading";
-import { useRoleContext } from "../context/useRoleContext";
-import AdminDashboard from "../features/admin/components/AdminDashboard";
+import toast from "react-hot-toast";
 import EmployeeDashboard from "../features/employee/components/EmployeeDashboard";
+import AdminDashboard from "../features/ADMIN/components/ADMINDashboard";
+import API from "../api/axios";
 
 const Dashboard = () => {
-  const { role } = useRoleContext();
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(role);
+
   useEffect(() => {
-    if (role === "admin") {
-      setData(dummyAdminDashboardData);
-    } else {
-      setData(dummyEmployeeDashboardData);
-    }
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    API.get("/dashboard")
+      .then((res) => setData(res.data))
+      .catch((err) => toast.error(err.response?.data?.error || err?.message))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <Loading />;
@@ -32,7 +24,8 @@ const Dashboard = () => {
         Failed to load dashboard data
       </h1>
     );
-  if (data.role === "admin") {
+
+  if (data.role === "ADMIN") {
     return <AdminDashboard data={data} />;
   } else {
     return <EmployeeDashboard data={data} />;

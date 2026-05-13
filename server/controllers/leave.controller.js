@@ -4,7 +4,7 @@ import LeaveApplication from "../models/leave-application.model.js";
 
 /**
  * @desc crete leave
- * @route POST /api/leaves
+ * @route POST /api/leave
  */
 
 export const createLeave = async (req, res) => {
@@ -47,14 +47,18 @@ export const createLeave = async (req, res) => {
       status: "PENDING",
     });
 
-    await inngest.send({
-      name: "leave/pending",
-      data: {
-        leaveApplicationId: leave._id,
-      },
-    });
+    try {
+      await inngest.send({
+        name: "leave/pending",
+        data: {
+          leaveApplicationId: leave._id,
+        },
+      });
+    } catch (inngestError) {
+      console.error("Inngest error:", inngestError);
+    }
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       data: leave,
       message: "Leave Applied Successfully",
@@ -70,14 +74,14 @@ export const createLeave = async (req, res) => {
 
 /**
  * @desc get leaves
- * @route GET /api/leaves
+ * @route GET /api/leave
  */
 
 export const getLeaves = async (req, res) => {
   try {
     const session = req.session;
-    const isAdmin = session.role === "ADMIN";
-    if (isAdmin) {
+    const isADMIN = session.role === "ADMIN";
+    if (isADMIN) {
       const status = req.query.status;
       const where = status ? { status } : {};
       const leaves = await LeaveApplication.find(status)
@@ -121,7 +125,7 @@ export const getLeaves = async (req, res) => {
 
 /**
  * @desc Update leave status
- * @route PATCH /api/leaves/:id
+ * @route PATCH /api/leave/:id
  */
 
 export const updateLeaveStatus = async (req, res) => {
@@ -129,7 +133,7 @@ export const updateLeaveStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     if (!["APPROVED", "REJECTED", "PENDING"].includes(status)) {
-      return res.status(400).json({ error: "Invaild Status" });
+      return res.status(400).json({ error: "Invalid Status" });
     }
     const leave = await LeaveApplication.findByIdAndUpdate(
       id,

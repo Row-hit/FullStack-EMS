@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Search, Plus } from "lucide-react";
-import { DEPARTMENTS, dummyEmployeeData } from "../assets/assets";
+import { DEPARTMENTS } from "../assets/assets";
 import Loading from "../components/ui/Loading";
 import ErrorState from "../components/ui/ErrorStats";
 import EmployeeCard from "../features/employee/components/EmployeeCard";
 import EmployeeModal from "../features/employee/components/EmployeeModal";
+import API from "../api/axios";
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
@@ -15,15 +16,17 @@ const Employees = () => {
   const [editEmployee, setEditEmployee] = useState(null);
 
   const fetchEmployees = useCallback(async () => {
-    setLoading(true);
-
-    const filterDeptEmp = dummyEmployeeData.filter((emp) =>
-      selectDep ? emp.department === selectDep : emp,
-    );
-    setEmployees(filterDeptEmp);
-    setTimeout(() => {
+    try {
+      const url = selectDep
+        ? `/employees?department=${selectDep}`
+        : "/employees";
+      const res = await API.get(url);
+      setEmployees(res.data);
+    } catch (error) {
+      console.error("Failed to fetch employees", error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   }, [selectDep]);
 
   useEffect(() => {
@@ -74,10 +77,9 @@ const Employees = () => {
           onChange={(e) => setSelectDep(e.target.value)}
           className="w-1/3 bg-white border rounded-lg px-4 py-2 text-sm"
         >
-          <option>All Departments</option>
+          <option value="">All Departments</option>
           {DEPARTMENTS.map((deptName) => (
             <option key={deptName} value={deptName}>
-              {" "}
               {deptName}
             </option>
           ))}
@@ -94,9 +96,7 @@ const Employees = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filteredEmp.map((emp) => (
           <EmployeeCard
-            key={emp.id}
             emp={emp}
-            isOpen={setIsModelOpen}
             onEdit={(e) => {
               setEditEmployee(e);
               setIsModelOpen(true);

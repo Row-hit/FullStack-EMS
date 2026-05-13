@@ -16,13 +16,13 @@ const LoginRightSide = () => {
             </p>
           </div>
 
-          {/* Admin Button */}
+          {/* ADMIN Button */}
           <button
             className="group w-full flex justify-between items-center px-5 py-4 rounded-lg bg-[var(--bg-sec)] hover:bg-[var(--card)] shadow hover:shadow-md transition border z-50 cursor-pointer"
             onClick={() => navigate("/login/admin")}
           >
             <span className="text-[var(--text-main)] font-medium  group-hover:text-[var(--text-sec)] z-50">
-              Admin Portal
+              ADMIN Portal
             </span>
             <span className=" text-[var(--text-main)] group-hover:text-[var(--text-sec)] ">
               →

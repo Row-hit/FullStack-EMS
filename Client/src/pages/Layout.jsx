@@ -13,7 +13,7 @@ const Layout = () => {
       >
         <Sidebar desktopOpen={desktopOpen} setDesktopOpen={setDesktopOpen} />
       </div>
-      <main className="flex-1 overflow-scroll  mx-auto">
+      <main className="flex-1 overflow-scroll   p-5">
         <div className="p-4 sm:pt-16 sm:p-6 lg:pt-6  lg:p-8  w-full  max-w-6xl mx-auto ">
           <Outlet />
         </div>

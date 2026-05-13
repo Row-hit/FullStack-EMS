@@ -1,4 +1,9 @@
-const StatsCards = ({ cards, iconPosition = "left" }) => {
+const StatsCards = ({
+  cards,
+  selectedType,
+  setSelectedType,
+  iconPosition = "left",
+}) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-10">
       {cards.map((card) => {
@@ -8,11 +13,20 @@ const StatsCards = ({ cards, iconPosition = "left" }) => {
         return (
           <div
             key={card.title}
-            className="group bg-white border border-slate-200 p-4 flex items-center justify-around shadow-sm hover:shadow-md transition rounded-lg border-l-4 border-l-slate-400 hover:border-l-indigo-400"
+            onClick={() =>
+              setSelectedType?.(card.type === "ALL" ? "" : card.type)
+            }
+            className={`group bg-white border border-slate-200 p-4 flex items-center justify-around  hover:shadow-md transition rounded-lg border-l-4  ${card.type && "cursor-pointer"} ${
+              (selectedType || "ALL") === card.type
+                ? "border-l-indigo-600  ring-2 ring-indigo-200 shadow-indigo-200 shadow-md scale-110  "
+                : "border-l-slate-400 hover:border-l-indigo-400 shadow-sm "
+            } `}
           >
             {/* icon left */}
             {iconPosition === "left" && (
-              <div className="p-3 rounded-lg bg-slate-100 text-slate-600 group-hover:text-indigo-600">
+              <div
+                className={`p-3 rounded-xl transition-colors  duration-300   ${(selectedType || "ALL") === card.type ? "bg-indigo-50 text-indigo-600" : "bg-slate-100  text-slate-600 group-hover:text-indigo-600 group-hover:bg-indigo-50"}`}
+              >
                 <Icon size={22} />
               </div>
             )}
@@ -31,7 +45,9 @@ const StatsCards = ({ cards, iconPosition = "left" }) => {
 
             {/* icon right */}
             {iconPosition === "right" && (
-              <div className="p-3 rounded-lg bg-slate-100 text-slate-600 group-hover:text-indigo-600">
+              <div
+                className={`p-3 rounded-xl transition-colors  duration-300   ${(selectedType || "ALL") === card.type ? "bg-indigo-50 text-indigo-600" : "bg-slate-100  text-slate-600 group-hover:text-indigo-600 group-hover:bg-indigo-50"}`}
+              >
                 <Icon size={22} />
               </div>
             )}

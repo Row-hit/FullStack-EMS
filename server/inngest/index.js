@@ -1,7 +1,7 @@
 import { Inngest } from "inngest";
 import Attendance from "../models/attendance.model.js";
 import LeaveApplication from "../models/leave-application.model.js";
-import sendEmail from "../config/nodemailer.js";
+import { sendEmail } from "../config/nodemailer.js";
 import Employee from "../models/employee.model.js";
 
 // Create a client to send and receive events

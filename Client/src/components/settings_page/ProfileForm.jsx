@@ -1,18 +1,26 @@
 import { Loader2, Save, User } from "lucide-react";
 import { useState } from "react";
+import API from "../../api/axios";
+import toast from "react-hot-toast";
 
 const ProfileForm = ({ initialData, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setError("");
+
+    const bio = new FormData(e.currentTarget).get("bio");
+    try {
+      await API.post("/profile", { bio });
+      toast.success("Profile Updated Successfully");
+      onSuccess?.();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    } finally {
       setLoading(false);
-      onSuccess();
-    }, 1000);
+    }
   };
 
   return (
@@ -26,25 +34,9 @@ const ProfileForm = ({ initialData, onSuccess }) => {
         <h2 className="text-sm font-semibold text-gray-800">Public Profile</h2>
       </div>
 
-      {/* Errors   */}
-      {error && (
-        <div className="bg-rose-50 text-rose-700 p-4 rounded-xl text-sm border border-rose-20 mb-6 flex items-start gap-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-          {error}
-        </div>
-      )}
-
-      {/* message   */}
-      {message && (
-        <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl text-sm border border-emerald-200 mb-6 flex items-start gap-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-          {message}
-        </div>
-      )}
-
       {/* Form */}
       <div className="space-y-5">
-        <div className="grid grid-cols-1 sm:grid-c0ls-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Name

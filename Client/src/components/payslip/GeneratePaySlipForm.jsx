@@ -1,18 +1,64 @@
 import { Loader2Icon, Plus, X } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import API from "../../api/axios.js";
+
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 const GeneratePaySlipForm = ({ employees, onSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const [form, setForm] = useState({
+    employeeId: "",
+    basicSalary: "",
+    allowances: 0,
+    deductions: 0,
+  });
 
-    setTimeout(() => {
-      setLoading(false);
+  const handleEmployeeId = (e) => {
+    const employee = employees.find((emp) => emp.id === e.target.value);
+
+    setForm({
+      employeeId: e.target.value,
+      basicSalary: employee?.basicSalary || "",
+      allowances: employee?.allowances || 0,
+      deductions: employee?.deductions || 0,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      ...form,
+      month: formData.get("month"),
+      year: formData.get("year"),
+    };
+    try {
+      await API.post("/payslips", data);
       setIsOpen(false);
-    }, 700);
+      onSuccess();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen)
@@ -45,7 +91,13 @@ const GeneratePaySlipForm = ({ employees, onSuccess }) => {
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Employee
             </label>
-            <select name="employeeId" required>
+            <select
+              name="employeeId"
+              required
+              value={form.employeeId}
+              onChange={(e) => handleEmployeeId(e)}
+            >
+              <option value="">--Select-Employee--</option>
               {employees.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.firstName} {e.lastName} ({e.position})
@@ -62,9 +114,9 @@ const GeneratePaySlipForm = ({ employees, onSuccess }) => {
                 Month
               </label>
               <select name="month">
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                  <option key={m} value={m}>
-                    {m}
+                {months.map((month, i) => (
+                  <option key={month} value={i + 1}>
+                    {month}
                   </option>
                 ))}
               </select>
@@ -90,7 +142,13 @@ const GeneratePaySlipForm = ({ employees, onSuccess }) => {
               type="number"
               name="basicSalary"
               required
-              placeholder="5000"
+              value={form.basicSalary}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  basicSalary: e.target.value,
+                })
+              }
             />
           </div>
 
@@ -101,13 +159,33 @@ const GeneratePaySlipForm = ({ employees, onSuccess }) => {
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Allowances
               </label>
-              <input type="number" name="allowances" defaultValue="0" />
+              <input
+                type="number"
+                name="allowances"
+                value={form.allowances}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    allowances: e.target.value,
+                  })
+                }
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Deductions
               </label>
-              <input type="number" name="deductions" defaultValue="0" />
+              <input
+                type="number"
+                name="deductions"
+                value={form.deductions}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deductions: e.target.value,
+                  })
+                }
+              />
             </div>
           </div>
 

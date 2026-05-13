@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { DEPARTMENTS } from "../../../assets/assets";
 import EmployeeForm from "./EmployeeForm";
+import API from "../../../api/axios";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-const EmployeeModal = ({ isOpen, initialData }) => {
+const EmployeeModal = ({ isOpen, initialData, onSuccess }) => {
   const isEdit = Boolean(initialData);
 
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (initialData) {
@@ -17,14 +22,26 @@ const EmployeeModal = ({ isOpen, initialData }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // basic validation
-    if (!form.firstName || !form.email) return;
-
-    // reset form
-    setForm(null);
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    if (isEdit) {
+      const pswd = formData.get("password");
+      if (!pswd) formData.delete("password");
+    }
+    try {
+      const url = isEdit ? `/employees/${initialData.id}` : "/employees";
+      const method = isEdit ? "put" : "post";
+      await API[method](url, formData);
+      onSuccess ? onSuccess() : navigate("/employees");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || err.response?.data?.error || err.message,
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

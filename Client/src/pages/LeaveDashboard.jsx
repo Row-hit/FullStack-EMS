@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Check,
+  LayoutDashboard,
   PalmtreeIcon,
   PlusIcon,
   ThermometerIcon,
@@ -9,31 +10,40 @@ import {
   X,
 } from "lucide-react";
 import Loading from "../components/ui/Loading";
-import { dummyLeaveData } from "../assets/assets";
+
 import StatsCards from "../components/ui/StatsCards";
 import LeaveHistory from "../components/leave/LeaveHistory";
 import LeaveApplyModal from "../components/leave/LeaveApplyModal";
-import { useRoleContext } from "../context/useRoleContext";
+import { useAuth } from "../context/AuthContext";
+import API from "../api/axios";
+import toast from "react-hot-toast";
 
 const LeaveDashboard = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [leaves, setLeaves] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
 
-  const { role } = useRoleContext();
-  const isAdmin = role === "admin" || false;
+  const isADMIN = user?.role === "ADMIN";
 
-  const fetchLeavesData = async () => {
-    setLeaves(dummyLeaveData);
-    setTimeout(() => {
+  const fetchLeavesData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await API.get("/leave");
+      setLeaves(res.data.leavesData || []);
+      if (res.data.employee?.isDeleted) setIsDeleted(true);
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+    } finally {
       setLoading(false);
-    }, 1000);
-  };
+    }
+  }, []);
 
   useEffect(() => {
     fetchLeavesData();
-  }, []);
+  }, [fetchLeavesData]);
 
   const approvedLeaves = leaves.filter((leave) => leave.status === "APPROVED");
   const sickCount = leaves.filter((leave) => leave.type === "SICK").length;
@@ -41,10 +51,35 @@ const LeaveDashboard = () => {
   const annualCount = leaves.filter((leave) => leave.type === "ANNUAL").length;
 
   const leaveStats = [
-    { label: "Sick Leave", value: sickCount, icon: ThermometerIcon },
-    { label: "Casual Leave", value: casualCount, icon: UmbrellaIcon },
-    { label: "Annual Leave", value: annualCount, icon: PalmtreeIcon },
+    {
+      label: "All Leave",
+      type: "ALL",
+      value: sickCount + casualCount + annualCount,
+      icon: LayoutDashboard,
+    },
+    {
+      label: "Sick Leave",
+      type: "SICK",
+      value: sickCount,
+      icon: ThermometerIcon,
+    },
+    {
+      label: "Casual Leave",
+      type: "CASUAL",
+      value: casualCount,
+      icon: UmbrellaIcon,
+    },
+    {
+      label: "Annual Leave",
+      type: "ANNUAL",
+      value: annualCount,
+      icon: PalmtreeIcon,
+    },
   ];
+
+  const filteredLeaves = selectedType
+    ? leaves.filter((leave) => leave.type === selectedType)
+    : leaves;
 
   if (loading) return <Loading />;
   return (
@@ -54,13 +89,13 @@ const LeaveDashboard = () => {
         <div>
           <h1 className="page-title">Leave Management</h1>
           <p className="page-subtitle">
-            {isAdmin
+            {isADMIN
               ? "Manage leave applications"
               : "Your leave history and request"}
           </p>
         </div>
 
-        {!isAdmin && !isDeleted && (
+        {!isADMIN && !isDeleted && (
           <button
             onClick={() => setShowModal(true)}
             className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
@@ -70,12 +105,18 @@ const LeaveDashboard = () => {
         )}
       </div>
 
-      {!isAdmin && <StatsCards cards={leaveStats} />}
+      {!isADMIN && (
+        <StatsCards
+          cards={leaveStats}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+        />
+      )}
 
       {/* Table */}
       <LeaveHistory
-        leaves={leaves}
-        isAdmin={isAdmin}
+        leaves={filteredLeaves}
+        isADMIN={isADMIN}
         onUpdate={fetchLeavesData}
       />
 

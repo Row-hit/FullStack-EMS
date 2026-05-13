@@ -12,7 +12,7 @@ export const DEPARTMENTS = [
 ];
 
 export const dummyAdminDashboardData = {
-  role: "admin",
+  role: "ADMIN",
   totalEmployees: 3,
   totalDepartments: 10,
   todayAttendance: 1,
@@ -335,5 +335,5 @@ export function getDayTypeDisplay(record) {
   if (record.checkIn && !record.checkOut) {
     return { label: "In Progress", className: "bg-indigo-100 text-indigo-700" };
   }
-  return { label: "—", className: "" };
+  return { label: null, className: "" };
 }

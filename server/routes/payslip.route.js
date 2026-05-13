@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect, protectAdmin } from "../middleware/auth.middleware.js";
+import { protect, protectADMIN } from "../middleware/auth.middleware.js";
 import {
   createPayslip,
   getPayslipById,
@@ -10,7 +10,7 @@ const payslipRouter = Router();
 
 payslipRouter.use(protect);
 
-payslipRouter.post("/", protectAdmin, createPayslip);
+payslipRouter.post("/", protectADMIN, createPayslip);
 payslipRouter.get("/", getPayslips);
 payslipRouter.get("/:id", getPayslipById);
 

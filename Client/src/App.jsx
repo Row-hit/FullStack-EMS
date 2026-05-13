@@ -2,14 +2,16 @@ import React from "react";
 import { RouterProvider } from "react-router-dom";
 import router from "./app.route";
 import { Toaster } from "react-hot-toast";
-import { RoleProvider } from "./context/useRoleContext";
+import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
   return (
-    <RoleProvider>
-      <Toaster />
-      <RouterProvider router={router} />
-    </RoleProvider>
+    <AuthProvider>
+       
+        <Toaster />
+        <RouterProvider router={router} />
+      
+    </AuthProvider>
   );
 };
 

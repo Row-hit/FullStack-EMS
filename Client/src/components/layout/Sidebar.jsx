@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { dummyProfileData } from "../../assets/assets";
 import {
   ArrowBigLeftDash,
   CalendarIcon,
@@ -11,6 +10,7 @@ import {
   LayoutGridIcon,
   ListCollapse,
   ListCollapseIcon,
+  Loader2,
   LogOutIcon,
   LucideListCollapse,
   MenuIcon,
@@ -18,17 +18,22 @@ import {
   UserIcon,
   XIcon,
 } from "lucide-react";
-import { useRoleContext } from "../../context/useRoleContext";
 import DarkThemeToggle from "../ui/DarkThemeToggle";
+import { useAuth } from "../../context/AuthContext";
+import API from "../../api/axios";
+import Loading from "../ui/Loading";
 
 const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
-  const { role, setRole } = useRoleContext();
+  const { user, setUser, loading, logout } = useAuth();
   const { pathname } = useLocation();
   const [username, setUsername] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    setUsername(dummyProfileData.fullName);
+    API.get("/profile").then(({ data }) => {
+      if (data.firstName)
+        setUsername(`${data.firstName} ${data.lastName || ""}`.trim());
+    });
   }, []);
 
   //mobile sidebar close on route change
@@ -36,10 +41,14 @@ const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
     setMobileOpen(false);
   }, [pathname]);
 
+  if (loading || !user) return <Loading />;
+
+  const role = user.role;
+
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
 
-    role === "admin"
+    role === "ADMIN"
       ? { name: "Employees", href: "/employees", icon: UserIcon }
       : { name: "Attendance", href: "/attendance", icon: CalendarIcon },
     { name: "Leave", href: "/leave", icon: FileTextIcon },
@@ -48,7 +57,7 @@ const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
   ];
 
   const handleLogout = () => {
-    setRole(null);
+    logout();
     window.location.href = "/login";
   };
 
@@ -95,7 +104,7 @@ const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
               {username}
             </p>
             <p className="text-[11px]   text-slate-200 truncate">
-              {role === "admin" ? "Administrator" : "Employee"}
+              {role === "ADMIN" ? "Administrator" : "Employee"}
             </p>
           </div>
         </div>
@@ -118,61 +127,37 @@ const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
 
       {/* Navigation lists  */}
       <div className="flex-1 px-3 space-y-0.5 overflow-y-auto ">
-        {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+        {loading ? (
+          <div className="px-3 py-3 flex items-center gap-2 text-slate-500">
+            <Loader2 className="animate-spin w-4 h-4" />
+            <span className="text-sm">Loading...</span>
+          </div>
+        ) : (
+          navItems.map((item) => {
+            const isActive = pathname.startsWith(item.href);
 
-          return (
-            <Link
-              key={item.name}
-              to={item.href}
-              state={{ role }}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-md  font-medium transition-all duration-150 relative 
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                state={{ role }}
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-md  font-medium transition-all duration-150 relative 
               ${isActive ? "bg-indigo-500/12 text-indigo-100 text-[16px]" : "text-slate-300 hover:text-white hover:bg-white/4 text-[13px]"} `}
-            >
-              {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500" />
-              )}
-              <item.icon
-                className={`w-[17px] h-[17px] shrink-0 ${isActive ? "text-indigo-300" : "text-slate-400 group-hover:text-slate-300"} `}
-              />
-              <span className="flex-1 ">{item.name}</span>
-              {isActive && (
-                <ChevronRightIcon className="w-5 h-5 text-indigo-500/50" />
-              )}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Role Switcher Buttons */}
-      <div className="p-3 border-t border-white/6">
-        <p className="text-center text-slate-500 mb-4">
-          // only for development
-        </p>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setRole("admin")}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 ${
-              role === "admin"
-                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                : "text-slate-400 hover:text-white hover:bg-white/4 border border-white/10"
-            }`}
-          >
-            <span className="font-bold text-base">A</span>
-            <span>Admin</span>
-          </button>
-          <button
-            onClick={() => setRole("employee")}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 ${
-              role === "employee"
-                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                : "text-slate-400 hover:text-white hover:bg-white/4 border border-white/10"
-            }`}
-          >
-            <span className="font-bold text-base">E</span>
-            <span>Employee</span>
-          </button>
-        </div>
+              >
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500" />
+                )}
+                <item.icon
+                  className={`w-[17px] h-[17px] shrink-0 ${isActive ? "text-indigo-300" : "text-slate-400 group-hover:text-slate-300"} `}
+                />
+                <span className="flex-1 ">{item.name}</span>
+                {isActive && (
+                  <ChevronRightIcon className="w-5 h-5 text-indigo-500/50" />
+                )}
+              </Link>
+            );
+          })
+        )}
       </div>
 
       {/* Logout link  */}
@@ -216,7 +201,7 @@ const Sidebar = ({ desktopOpen, setDesktopOpen }) => {
 
       {/* Sidebar (shared styles) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 h-screen flex flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-white/5 text-white transform transform-gpu will-change-transform transition-transform duration-500 ease-out ${mobileOpen || desktopOpen ? "translate-x-0" : "-translate-x-full"}  `}
+        className={`fixed inset-y-0 left-0 z-50 w-72 h-screen flex flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-white/5 text-white transform transform-gpu will-change-transform transition-transform duration-500 ease-out  ${mobileOpen ? "translate-x-0" : "-translate-x-full"} ${desktopOpen ? "lg:translate-x-0" : "lg:-translate-x-full"} `}
       >
         {sidebarContent}
       </aside>

@@ -8,13 +8,13 @@ import Employee from "../models/employee.model.js";
 export const getProfile = async (req, res) => {
   try {
     const session = req.session;
-    const employee = Employee.findOne({ userId: session.userId });
+    const employee = await Employee.findOne({ userId: session.userId });
 
     if (!employee) {
-      // Authenticated user is not an employee - return admin profile;
+      // Authenticated user is not an employee - return ADMIN profile;
 
       return res.json({
-        firstName: "Admin",
+        firstName: "ADMIN",
         lastName: "",
         session: session.email,
       });
@@ -27,21 +27,28 @@ export const getProfile = async (req, res) => {
 
 /**
  * @desc Update Profile
- * @route PUT /api/profile
+ * @route Post /api/profile
  */
 
 export const updateProfile = async (req, res) => {
   try {
     const session = req.session;
-    const employee = Employee.findOne({ userId: session.userId });
-    if (!employee) return res.status(400).json({ error: "Employee not found" });
-    if (employee.isDeleted) {
-      return res
-        .status(403)
-        .json({
-          error: "your account is deactivated, you cant update your profile",
-        });
+    const employee = await Employee.findOne({ userId: session.userId });
+
+    // only block normal users
+    if (!employee && session.role !== "ADMIN") {
+      return res.status(400).json({
+        error: "Employee not found",
+      });
     }
+
+    // only check isDeleted if employee exists
+    if (employee?.isDeleted) {
+      return res.status(403).json({
+        error: "Your account is deactivated, you can't update your profile",
+      });
+    }
+
     await Employee.findByIdAndUpdate(employee._id, {
       bio: req.body.bio,
     });
