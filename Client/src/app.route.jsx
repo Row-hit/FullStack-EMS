@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, useLocation } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import LoginLanding from "./pages/LoginLanding";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
