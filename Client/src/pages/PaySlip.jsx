@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { dummyEmployeeData, dummyPayslipData } from "../assets/assets";
 import Loading from "../components/ui/Loading";
-import PAySlipList from "../components/payslip/PAySlipList";
 import GeneratePaySlipForm from "../components/payslip/GeneratePaySlipForm";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import API from "../api/axios";
+import PaySlipList from "../components/payslip/PaySlipList";
 
 const Payslip = ({ onGenerate }) => {
   const [paySlips, setPaySlips] = useState([]);
@@ -61,7 +60,7 @@ const Payslip = ({ onGenerate }) => {
       </div>
 
       {/* Table */}
-      <PAySlipList paySlips={paySlips} isADMIN={isADMIN} />
+      <PaySlipList paySlips={paySlips} isADMIN={isADMIN} />
     </div>
   );
 };

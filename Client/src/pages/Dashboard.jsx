@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Loading from "../components/ui/Loading";
 import toast from "react-hot-toast";
 import EmployeeDashboard from "../features/employee/components/EmployeeDashboard";
-import AdminDashboard from "../features/ADMIN/components/ADMINDashboard";
+import AdminDashboard from "../features/admin/components/AdminDashboard";
 import API from "../api/axios";
 
 const Dashboard = () => {
