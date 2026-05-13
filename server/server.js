@@ -19,7 +19,6 @@ const PORT = process.env.PORT || 3999;
 
 // Middlewares
 app.use(cors());
-app.options("*", cors());
 app.use(express.json());
 app.use(multer().none());
 
