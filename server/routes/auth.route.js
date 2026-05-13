@@ -8,9 +8,9 @@ import { protect } from "../middleware/auth.middleware.js";
 
 const authRouter = Router();
 
-authRouter.use("/secure", protect);
-
 authRouter.post("/login", login);
+
+authRouter.use("/secure", protect);
 authRouter.get("/secure/session", session);
 authRouter.post("/secure/change-password", changePassword);
 
