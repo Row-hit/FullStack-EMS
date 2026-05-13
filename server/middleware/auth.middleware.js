@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 
 export const protect = (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -26,6 +29,9 @@ export const protect = (req, res, next) => {
 };
 
 export const protectADMIN = (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
   if (req?.session?.role !== "ADMIN") {
     return res.status(403).json({ error: "ADMIN access required" });
   }
