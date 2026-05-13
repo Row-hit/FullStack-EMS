@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { dummyPayslipData } from "../assets/assets";
 import Loading from "../components/ui/Loading";
 import { format } from "date-fns";
+import API from "../api/axios";
+import Payslip from "./PaySlip";
 
 const PrintPaySlipPage = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [paySlip, setPaySlip] = useState("");
+  const [paySlip, setPaySlip] = useState(null);
 
   useEffect(() => {
-    setPaySlip(dummyPayslipData.find((slip) => slip._id === id));
-    setTimeout(() => {
-      setLoading(false);
-    }, 700);
+    API.get(`/payslips/${id}`)
+      .then((res) => setPaySlip(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return <Loading />;
+
   if (!paySlip)
     return (
       <p className="text-center py-12 text-slate-400">Payslip not found</p>

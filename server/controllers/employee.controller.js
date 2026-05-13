@@ -1,6 +1,8 @@
 import Employee from "../models/employee.model.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import sendVerificationMail from "../utils/sendVerificationMail.js";
 
 /**
  * @desc  GET all employees
@@ -68,39 +70,90 @@ export const createEmployee = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create User
-    const user = User.create({
+    const user = await User.create({
       email,
       password: hashedPassword,
       role: role || "EMPLOYEE",
     });
 
-    // Create employee
-    const employee = await Employee.create({
-      userId: user._id,
-      firstName,
-      lastName,
-      email,
-      phone,
-      position,
-      department: department || "Engineering",
-      basicSalary: Number(basicSalary) || 0,
-      allowances: Number(allowances) || 0,
-      deduction: Number(deduction) || 0,
-      joinDate: new Date(joinDate),
-      bio: bio || "",
-    });
+    try {
+      // Create employee
+      const employee = await Employee.create({
+        userId: user._id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        position,
+        department: department || "Engineering",
+        basicSalary: Number(basicSalary) || 0,
+        allowances: Number(allowances) || 0,
+        deduction: Number(deduction) || 0,
+        joinDate: new Date(joinDate),
+        bio: bio || "",
+      });
+      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
 
-    return res.status(201).json({
-      success: true,
-      message: "Employee created successfully",
-      employee,
-    });
+      await sendVerificationMail(user.email, token);
+
+      return res.status(201).json({
+        success: true,
+        message: "Employee created successfully",
+        employee,
+      });
+    } catch (employeeError) {
+      // rollback user creation
+      await User.findByIdAndDelete(user._id);
+
+      throw employeeError;
+    }
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ error: "Email already exist" });
     }
     console.error("Error creating employee:", error);
-    res.status(500).json({ error: "Failed to create employee" });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * @desc  verify  Employee
+ * @route GET   /api/employees/verify-email/:token
+ * @access public
+ */
+export const verifyEmployee = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.isVerified = true;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
 };
 
@@ -122,7 +175,7 @@ export const updateEmployee = async (req, res) => {
       department,
       basicSalary,
       allowances,
-      deduction,
+      deductions,
       password,
       role,
       bio,
@@ -145,7 +198,7 @@ export const updateEmployee = async (req, res) => {
       department: department || "Engineering",
       basicSalary: Number(basicSalary) || 0,
       allowances: Number(allowances) || 0,
-      deduction: Number(deduction) || 0,
+      deductions: Number(deductions) || 0,
       employmentStatus: employmentStatus || "ACTIVE",
       bio: bio || "",
     });
@@ -153,7 +206,7 @@ export const updateEmployee = async (req, res) => {
     //update user record
     const userUpdate = { email };
     if (role) userUpdate.role = role;
-    if (password) userUpdate.password = bcrypt.hash(password, 10);
+    if (password) userUpdate.password = await bcrypt.hash(password, 10);
 
     await User.findByIdAndUpdate(employee.userId, userUpdate);
 

@@ -1,10 +1,20 @@
 import React from "react";
 import Avatar from "../../../components/ui/Avatar";
 import { PencilIcon, Trash2Icon } from "lucide-react";
+import API from "../../../api/axios";
+import toast from "react-hot-toast";
 
 const EmployeeCard = ({ emp, onEdit, onDelete }) => {
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this employee?")) return;
+    if (!confirm("Are you sure you want to delete this employee?")) {
+      return;
+    }
+    try {
+      await API.delete(`/employees/${emp.id}`);
+      onDelete();
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+    }
   };
   return (
     <div className="group card card-hover bg-white rounded-xl border shadow-sm overflow-hidden hover:shadow-md transition ">
@@ -29,7 +39,7 @@ const EmployeeCard = ({ emp, onEdit, onDelete }) => {
               <PencilIcon className="w-4 h-4" />
             </button>
             <button
-              onClick={handleDelete}
+              onClick={() => handleDelete()}
               className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-rose-600 rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50"
             >
               <Trash2Icon className="w-4 h-4" />

@@ -11,6 +11,7 @@ import AfterLoginLanding from "./components/layout/AfterLoginLanding";
 import LeaveDashboard from "./pages/LeaveDashboard";
 import Payslip from "./pages/PaySlip";
 import Settings from "./pages/Settings";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 const router = createBrowserRouter([
   {
@@ -43,15 +44,15 @@ const router = createBrowserRouter([
         element: <Attendance />,
       },
       {
-        path: "/leave",
+        path: "leave",
         element: <LeaveDashboard />,
       },
       {
-        path: "/payslips",
+        path: "payslips",
         element: <Payslip />,
       },
       {
-        path: "/settings",
+        path: "settings",
         element: <Settings />,
       },
     ],
@@ -61,10 +62,14 @@ const router = createBrowserRouter([
     element: <LoginLanding />,
     children: [
       {
-        path: ":role",
+        path: ":userRole",
         element: <LoginForm />,
       },
     ],
+  },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmailPage />,
   },
   {
     path: "/print/payslips/:id",

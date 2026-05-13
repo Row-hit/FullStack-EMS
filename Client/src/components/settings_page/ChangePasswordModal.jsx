@@ -1,12 +1,39 @@
 import { Loader2, LockIcon, X } from "lucide-react";
 import React, { useState } from "react";
+import API from "../../api/axios";
+import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const ChangePasswordModal = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const currentPassword = formData.get("currentPassword");
+    const newPassword = formData.get("newPassword");
+
+    try {
+      const { data } = await API.post("/auth/secure/change-password", {
+        currentPassword,
+        newPassword,
+      });
+
+      toast.success("password changed successfully");
+      e.target.reset();
+      onClose();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -33,30 +60,47 @@ const ChangePasswordModal = ({ open, onClose }) => {
           </button>
         </div>
         <form className="p-6 space-y-5" onSubmit={handleSubmit}>
-          {message.text && (
-            <div
-              className={`p-3 rounded-xl text-sm flex items-start gap-3 
-                      ${message.type === "success" ? "bg-emerald-50 text-emerald-700 border  border-emerald-200" : "bg-rose-50 text-rose-700 border-rose-200"} `}
-            >
-              <div
-                className={`w-1.5 h-1 rounded-full shrink-0  
-                          ${message.type === "success" ? "bg-emerald-500" : "bg-rose-500"}`}
-              >
-                {message.text}
-              </div>
-            </div>
-          )}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Current Password
             </label>
-            <input type="password" name="currentPassword" required />
+            <div className="relative">
+              <input
+                type={showCurrent ? "text" : "password"}
+                name="currentPassword"
+                required
+                className="w-full pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowCurrent(!showCurrent)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+              >
+                {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               New Password
             </label>
-            <input type="password" name="newPassword" required />
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                name="newPassword"
+                required
+                className="w-full pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowNew(!showNew)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+              >
+                {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div className="flex gap-3 pt-2">
             {" "}

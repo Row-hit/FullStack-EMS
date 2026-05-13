@@ -1,30 +1,32 @@
 import { ArrowLeftIcon, EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useRoleContext } from "../../../context/useRoleContext";
-
-const validRoles = ["admin", "employee"];
+import { useAuth } from "../../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const roleConfig = {
   admin: {
     role: "admin",
     title: "Admin portal",
     subtitle: "Sign in to manage the organization",
+    email: "admin@ex.com",
+    password: "admin123",
   },
   employee: {
     role: "employee",
     title: "Employee Portal",
     subtitle: "sign in to access your account",
+    email: "emp@ex.com",
+    password: "emp123",
   },
 };
 const LoginForm = () => {
-  const { role } = useParams();
-  const navigate = useNavigate();
-  const { setRole } = useRoleContext();
-
+  const { userRole } = useParams();
+  const { login, loading, setLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -32,19 +34,29 @@ const LoginForm = () => {
     formState: { errors, isSubmitted },
   } = useForm();
 
-  const config = roleConfig[role];
-
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
+    const { email, password } = data;
 
-    setTimeout(() => {
-      setLoading(false);
-      if (validRoles.includes(role?.toLowerCase())) {
-        setRole(role);
+    try {
+      const loggedInUser = await login(email, password, userRole);
+
+      if (loggedInUser) {
+        navigate("/");
       }
-      navigate("/");
-    }, 1200);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Login Failed",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const config = roleConfig[userRole];
 
   if (!config) return <Navigate to={"/login"} replace />;
   return (
@@ -78,7 +90,9 @@ const LoginForm = () => {
                 Email address
               </label>
               <input
+                defaultValue={config.email}
                 {...register("email", { required: "Email is required" })}
+                autoComplete="email"
                 placeholder="Enter Email here..."
                 className="text-[var(--text-main)] bg-[var(--bg-sec)]"
               />
@@ -89,10 +103,12 @@ const LoginForm = () => {
               </label>
               <div className="relative">
                 <input
+                  defaultValue={config.password}
                   type={showPassword ? "text" : "password"}
                   {...register("password", {
                     required: "Password is required",
                   })}
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   className="pr-11  text-[var(--text-main)] bg-[var(--bg-sec)]"
                 />

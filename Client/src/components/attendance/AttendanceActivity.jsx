@@ -50,12 +50,12 @@ const AttendanceActivity = ({ activities }) => {
                     </td>
                     <td className="p-3">{getWorkingHoursDisplay(record)}</td>
                     <td className="p-3">
-                      {dayType.label !== "-" ? (
+                      {dayType.label != null ? (
                         <span className={`badge ${dayType.className} `}>
                           {dayType.label}
                         </span>
                       ) : (
-                        "="
+                        "-"
                       )}
                     </td>
                     <td className="p-3">

@@ -1,12 +1,22 @@
 import { format } from "date-fns";
 import { Check, Loader2, X } from "lucide-react";
 import React, { useState } from "react";
+import API from "../../api/axios";
+import toast from "react-hot-toast";
 
-const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
+const LeaveHistory = ({ leaves, isADMIN, onUpdate }) => {
   const [processing, setProcessing] = useState(null);
 
   const handleStatusUpdate = async (id, status) => {
-    setProcessing(id);
+    try {
+      setProcessing(id);
+      const res = await API.patch(`/leave/${id}`, { status });
+      onUpdate();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    } finally {
+      setProcessing(null);
+    }
   };
   return (
     <div className="card overflow-hidden">
@@ -14,13 +24,13 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
         <table className="table-modern">
           <thead>
             <tr>
-              {isAdmin && <th>Employee</th>}
+              {isADMIN && <th>Employee</th>}
               <th>Types</th>
               <th>Dates</th>
               <th>Reason</th>
               <th>Status</th>
 
-              {isAdmin && <th className="text-center">Action</th>}
+              {isADMIN && <th className="text-center">Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -34,8 +44,8 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
             ) : (
               leaves.map((leave) => {
                 return (
-                  <tr key={leave._id || leave.id} className="border-t">
-                    {isAdmin && (
+                  <tr key={leave._id || leave.id} className="border-t ">
+                    {isADMIN && (
                       <td className="p-3">
                         {leave.employee?.firstName} {leave.employee?.lastName}
                       </td>
@@ -56,11 +66,11 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
                       {leave.reason}
                     </td>
                     <td
-                      className={`badge ${leave.status === "APPROVED" ? "badge-success" : leave.status === "REJECTED" ? "badge-danger" : "badge-warning"} w-2/3 text-center`}
+                      className={`badge ${leave.status === "APPROVED" ? "badge-success" : leave.status === "REJECTED" ? "badge-danger" : "badge-warning"} w-full text-center`}
                     >
                       {leave.status}
                     </td>
-                    {isAdmin && (
+                    {isADMIN && (
                       <td>
                         {leave.status === "PENDING" && (
                           <div className="flex justify-center gap-2">

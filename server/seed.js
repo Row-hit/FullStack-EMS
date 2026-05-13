@@ -1,39 +1,39 @@
 import dotenv from "dotenv/config.js";
-import connectDB from "./configDB/connectDB.js";
+import connectDB from "./config/connectDB.js";
 import User from "./models/user.model.js";
 import bcrypt from "bcrypt";
 
-const TemporaryPassword = "admin123";
+const TemporaryPassword = "ADMIN123";
 
-async function registerAdmin() {
+async function registerADMIN() {
   try {
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
     if (!ADMIN_EMAIL) {
-      console.error("Admin Email env not found");
+      console.error("ADMIN Email env not found");
       process.exit(1);
     }
 
     await connectDB();
 
-    const existingAdmin = await User.findOne({
+    const existingADMIN = await User.findOne({
       email: process.env.ADMIN_EMAIL,
     });
 
-    if (existingAdmin) {
-      console.log("User is already exist as role :", existingAdmin.role);
+    if (existingADMIN) {
+      console.log("User is already exist as role :", existingADMIN.role);
       process.exit(0);
     }
 
     const hashedPassword = await bcrypt.hash(TemporaryPassword, 10);
 
-    const admin = await User.create({
+    const ADMIN = await User.create({
       email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       role: "ADMIN",
     });
 
-    console.log("Admin user is created");
-    console.log("\nemail:", admin.email);
+    console.log("ADMIN user is created");
+    console.log("\nemail:", ADMIN.email);
     console.log("password:", TemporaryPassword);
     console.log("\n --> change the password after login !");
 
@@ -43,4 +43,4 @@ async function registerAdmin() {
   }
 }
 
-registerAdmin();
+registerADMIN();

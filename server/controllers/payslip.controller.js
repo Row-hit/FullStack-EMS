@@ -41,11 +41,11 @@ export const createPayslip = async (req, res) => {
 export const getPayslips = async (req, res) => {
   try {
     const session = req.session;
-    const isAdmin = session.role === "ADMIN";
+    const isADMIN = session.role === "ADMIN";
 
-    if (isAdmin) {
+    if (isADMIN) {
       const payslips = await Payslip.find()
-        .populate(employeeId)
+        .populate("employeeId")
         .sort({ createdAt: -1 });
       const payslipData = payslips.map((p) => {
         const obj = p.toObject();
@@ -94,7 +94,7 @@ export const getPayslipById = async (req, res) => {
       employee: payslip.employeeId,
     };
 
-    return res.status(200).json({ result });
+    return res.status(200).json(result);
   } catch (error) {
     return res
       .status(500)

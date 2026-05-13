@@ -5,23 +5,24 @@ import LeaveApplication from "../models/leave-application.model.js";
 import Payslip from "../models/payslip.model.js";
 
 /**
- * @desc Get dashboard for Employee and Admin
+ * @desc Get dashboard for Employee and ADMIN
  * @route  GET /api/dashboard
  */
 export const getDashboard = async (req, res) => {
   try {
     const session = req.session;
     if (session.role === "ADMIN") {
-      const [totalEmployees, totalAttendance, pendingLeaves] = Promise.all([
-        Employee.countDocuments({ isDeleted: { $ne: true } }),
-        Attendance.countDocument({
-          date: {
-            $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-            $lt: new Date(new Date().setHours(24, 0, 0, 0)),
-          },
-        }),
-        LeaveApplication.countDocuments({ status: "PENDING" }),
-      ]);
+      const [totalEmployees, totalAttendance, pendingLeaves] =
+        await Promise.all([
+          Employee.countDocuments({ isDeleted: { $ne: true } }),
+          Attendance.countDocuments({
+            date: {
+              $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+              $lt: new Date(new Date().setHours(24, 0, 0, 0)),
+            },
+          }),
+          LeaveApplication.countDocuments({ status: "PENDING" }),
+        ]);
       return res.status(200).json({
         role: "ADMIN",
         totalEmployees,
@@ -38,7 +39,7 @@ export const getDashboard = async (req, res) => {
       }
       const today = new Date();
       const [currentMonthAttendance, pendingLeaves, latestPayslip] =
-        await promise.all([
+        await Promise.all([
           Attendance.countDocuments({
             employeeId: employee._id,
             date: {
@@ -46,7 +47,7 @@ export const getDashboard = async (req, res) => {
               $lt: new Date(today.getFullYear() + today.getMonth() + 1, 0),
             },
           }),
-          LeaveApplication.countDocument({
+          LeaveApplication.countDocuments({
             employeeId: employee._id,
             status: "PENDING",
           }),

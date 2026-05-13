@@ -1,14 +1,14 @@
 import { Download } from "lucide-react";
 import { format } from "date-fns";
 
-const PAySlipList = ({ paySlips = [], isAdmin }) => {
+const PaySlipList = ({ paySlips = [], isADMIN }) => {
   return (
     <div className="card overflow-hidden">
       <div className=" overflow-x-auto">
         <table className="table-modern">
           <thead>
             <tr>
-              {isAdmin && <th className="p-3 text-left">Employee</th>}
+              {isADMIN && <th className="p-3 text-left">Employee</th>}
               <th>Period</th>
               <th>Basic Salary</th>
               <th>Net Salary</th>
@@ -19,7 +19,7 @@ const PAySlipList = ({ paySlips = [], isAdmin }) => {
             {!paySlips?.length ? (
               <tr>
                 <td
-                  colSpan={isAdmin ? 5 : 4}
+                  colSpan={isADMIN ? 5 : 4}
                   className="text-center py-12 text-slate-400"
                 >
                   {" "}
@@ -32,7 +32,7 @@ const PAySlipList = ({ paySlips = [], isAdmin }) => {
                   key={paySlip._id || paySlip.id}
                   className="border-t hover:bg-slate-50 transition"
                 >
-                  {isAdmin && (
+                  {isADMIN && (
                     <td className="p-3 text-slate-700">
                       {paySlip.employee
                         ? `${paySlip.employee.firstName} ${paySlip.employee.lastName}`
@@ -53,11 +53,11 @@ const PAySlipList = ({ paySlips = [], isAdmin }) => {
                   </td>
 
                   <td className="  text-slate-500">
-                    {paySlip.basicSalary.toLocaleString()}
+                    {Number(paySlip.basicSalary || 0).toLocaleString()}
                   </td>
 
                   <td className="  font-medium text-slate-800">
-                    {paySlip.netSalary.toLocaleString()}
+                    {Number(paySlip.netSalary || 0).toLocaleString()}
                   </td>
 
                   <td className="text-center">
@@ -83,4 +83,4 @@ const PAySlipList = ({ paySlips = [], isAdmin }) => {
   );
 };
 
-export default PAySlipList;
+export default PaySlipList;

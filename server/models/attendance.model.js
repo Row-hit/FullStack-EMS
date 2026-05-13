@@ -27,8 +27,8 @@ const attendanceSchema = new mongoose.Schema(
     workingHour: { type: Number, default: null },
     dayType: {
       type: String,
-      enum: ["Full Day", "Three Quarter Day", "Half Day", "Short Day", "null"],
-      default: "null",
+      enum: ["Full Day", "Three Quarter Day", "Half Day", "Short Day", null],
+      default: null,
     },
   },
   { timestamps: true },

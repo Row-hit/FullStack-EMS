@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
-//Login for employee and admin
+//Login for employee and ADMIN
 /**
  * @desc authenticate user
  * @route POST /api/auth/login
@@ -11,8 +11,7 @@ import User from "../models/user.model.js";
 
 export const login = async (req, res) => {
   try {
-    const { email, password, role_type } = req.body;
-
+    const { email, password, role } = req.body;
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
@@ -21,7 +20,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // Find user by email (check both Employee and Admin models)
+    // Find user by email (check both Employee and ADMIN models)
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
@@ -38,14 +37,21 @@ export const login = async (req, res) => {
       });
     }
 
-    if (role_type === "admin" && user.role !== "ADMIN") {
+    if (!user.isVerified) {
       return res.status(401).json({
         success: false,
-        message: "Not authorized as Admin",
+        message: "Please verify your email first",
       });
     }
 
-    if (role_type === "employee" && user.role !== "EMPLOYEE") {
+    if (role === "admin" && user.role !== "ADMIN") {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized as ADMIN",
+      });
+    }
+
+    if (role === "employee" && user.role !== "EMPLOYEE") {
       return res.status(401).json({
         success: false,
         message: "Not authorized as Employee",
@@ -67,7 +73,7 @@ export const login = async (req, res) => {
       success: true,
       message: "Login successful",
       token,
-      user: { payload },
+      user: payload,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -79,7 +85,7 @@ export const login = async (req, res) => {
 };
 
 /**
- * @desc Get session for employee and admin
+ * @desc Get session for employee and ADMIN
  * @route GET /api/auth/session
  */
 
@@ -90,7 +96,7 @@ export const session = async (req, res) => {
 };
 
 /**
- * @desc  change password for employee and admin
+ * @desc  change password for employee and ADMIN
  * @route POST /api/auth/change-password
  */
 
@@ -100,33 +106,44 @@ export const changePassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
-        error: "Both password are required",
+        success: false,
+        message: "Both passwords are required",
       });
     }
-    const user = await User.findById(session.userId);
+    const user = await User.findById(session.userId).select("+password");
     if (!user) {
-      return res.status(400).json({ error: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const isVerified = await bcrypt.compare(currentPassword, user.password);
     if (!isVerified) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "entered wrong password",
+      });
+    }
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+    if (isSamePassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be different",
       });
     }
 
     const hashPassword = await bcrypt.hash(newPassword, 10);
-    await User.findByIdAndUpdate(session.userId, {
-      password: hashPassword,
-    });
+    user.password = hashPassword;
+    await user.save();
 
     return res
       .status(200)
       .json({ success: true, message: "Password changed Successfully" });
   } catch (error) {
+    console.error("Change password error:", error);
     return res
       .status(500)
-      .json({ success: false, message: " Failed to changed password" });
+      .json({ success: false, message: " Failed to change password" });
   }
 };

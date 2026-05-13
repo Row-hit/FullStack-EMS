@@ -4,12 +4,15 @@ import {
   deleteEmployee,
   getEmployees,
   updateEmployee,
+  verifyEmployee,
 } from "../controllers/employee.controller.js";
-import { protect, protectAdmin } from "../middleware/auth.middleware.js";
+import { protect, protectADMIN } from "../middleware/auth.middleware.js";
 
 const employeeRouter = Router();
 
-employeeRouter.use(protect, protectAdmin);
+employeeRouter.get("/verify-email/:token", verifyEmployee);
+
+employeeRouter.use(protect, protectADMIN);
 
 employeeRouter.get("/", getEmployees);
 employeeRouter.post("/", createEmployee);

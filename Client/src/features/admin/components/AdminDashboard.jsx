@@ -25,8 +25,8 @@ const AdminDashboard = ({ data }) => {
       description: "Organization Units",
     },
     {
-      title: "Today's Attendance",
-      value: data.todayAttendance,
+      title: "Total Attendance",
+      value: data.totalAttendance,
       icon: CalendarIcon,
       description: "Checked in today",
     },
@@ -43,7 +43,7 @@ const AdminDashboard = ({ data }) => {
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-slate-800">Dashboard</h1>
         <p className="text-sm text-slate-500">
-          Welcome back, Admin — here’s your overview
+          Welcome back, ADMIN — here’s your overview
         </p>
       </div>
 

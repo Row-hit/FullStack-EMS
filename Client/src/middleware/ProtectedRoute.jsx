@@ -1,11 +1,13 @@
 import React from "react";
-import { useRoleContext } from "../context/useRoleContext";
+import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import Loading from "../components/ui/Loading";
 
 const ProtectedRoute = ({ children }) => {
-  const { role } = useRoleContext();
+  const { user, loading } = useAuth();
 
-  if (!role) return <Navigate to={"/login"} replace />;
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to={"/login"} replace />;
 
   return children;
 };

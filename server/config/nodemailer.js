@@ -1,5 +1,7 @@
 import { createTransport } from "nodemailer";
 
+//For Inngest ---
+
 // Create a transporter using SMTP
 const transporter = createTransport({
   host: "smtp-relay.brevo.com",
@@ -11,7 +13,7 @@ const transporter = createTransport({
   },
 });
 
-const sendEmail = async ({ to, subject, body }) => {
+export const sendEmail = async ({ to, subject, body }) => {
   const response = await transporter.sendMail({
     from: process.env.SENDER_EMAIL,
     to,
@@ -21,4 +23,12 @@ const sendEmail = async ({ to, subject, body }) => {
   return response;
 };
 
-export default sendEmail;
+//For Employee Verification
+
+export const verifyTransporter = createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});

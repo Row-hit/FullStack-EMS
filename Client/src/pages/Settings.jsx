@@ -4,6 +4,8 @@ import Loading from "../components/ui/Loading";
 import { Lock } from "lucide-react";
 import ProfileForm from "../components/settings_page/ProfileForm";
 import ChangePasswordModal from "../components/settings_page/ChangePasswordModal";
+import toast from "react-hot-toast";
+import API from "../api/axios";
 
 const Settings = () => {
   const [profile, setProfile] = useState(null);
@@ -11,10 +13,16 @@ const Settings = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const fetchProfile = async () => {
-    setProfile(dummyProfileData);
-    setTimeout(() => {
+    setLoading(true);
+    try {
+      const res = await API.get("/profile");
+      const profile = res.data;
+      if (profile) setProfile(profile);
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
   useEffect(() => {
     fetchProfile();
