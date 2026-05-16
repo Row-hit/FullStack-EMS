@@ -15,7 +15,7 @@ import { inngest, functions } from "./inngest/index.js";
 
 const app = express();
 
-const PORT = process.env.PORT || 3999;
+const PORT = process.env.PORT || 4999;
 
 // Middlewares
 app.use(cors());
